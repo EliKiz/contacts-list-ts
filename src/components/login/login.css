@@ -1,0 +1,13 @@
+.ant-form  { 
+    margin: 100px auto;
+    width: 400px;
+}
+.ant-form-item-row { 
+    align-content: space-around;
+}
+.ant-col-offset-8 {
+    margin: 0;
+}
+.ant-btn { 
+    width: 100%;
+}
