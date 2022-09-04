@@ -1,12 +1,14 @@
 
 import { Avatar, Button, List } from 'antd';
-import { useState, useEffect } from 'react';
-import { Typography} from 'antd';
-import ListService from '../service/ListService';
+import { useState, useEffect, ChangeEventHandler } from 'react';
+import { Typography, Input} from 'antd';
+import {ListService} from '../../service/ListService';
 import './contactList.css'
+
 
 const {getContact} = ListService()
 const { Title } = Typography;
+const { Search } = Input;
 
 type ContactItem = { 
     phone: string,
@@ -18,6 +20,11 @@ const ContactList = () => {
 
     const [contactList, setContactList] = useState<ContactItem[]>([])
 
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.value)
+    }
+
     useEffect(() => {
         getContact()
             .then((res) => setContactList(res) )
@@ -27,6 +34,10 @@ const ContactList = () => {
     return ( 
         <div className="contactList">
             <Title>List contacts</Title>
+            <Search className='contactSerch' 
+                placeholder="search contact" 
+                onChange= {handleChange}
+                enterButton />
             <List
                 bordered
                 itemLayout="horizontal"

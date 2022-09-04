@@ -3,9 +3,11 @@ import { Typography, Alert } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LocaRoutes } from '../pages/LocalRoutes';
-import ListService from '../service/ListService';
+import {ListService} from '../../service/ListService';
 
 import './login.css'
+import { useAppDispatch } from '../app/hooks';
+import { logIn } from '../../store/slices/auth/authSlice';
 
 type Loginvalues = { 
     userName: string
@@ -19,15 +21,19 @@ type userItem = {
     id: string
 }
 
+
+
 const { Title } = Typography;
 
 const {getUsers} = ListService()
 
-const Login = ( {setIsLogin}: {setIsLogin: (value: boolean) => void}) => { 
+const Login = () => { 
 
     const [error, setError] = useState('')
     const [loadig, setLoading] = useState(false)
     const navigate = useNavigate()
+
+    const dispatch = useAppDispatch()
 
     const onFinish = async ({userName}: Loginvalues) => {
         setLoading(true)
@@ -41,7 +47,7 @@ const Login = ( {setIsLogin}: {setIsLogin: (value: boolean) => void}) => {
             setError('User not fiend')
         } else { 
             setError('')
-            setIsLogin(true)
+            dispatch(logIn())
             navigate(LocaRoutes.Contacts)
         }
         setLoading(false)
