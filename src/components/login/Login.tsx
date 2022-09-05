@@ -6,21 +6,14 @@ import { LocaRoutes } from '../pages/LocalRoutes';
 import {ListService} from '../../service/ListService';
 
 import './login.css'
-import { useAppDispatch } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { logIn } from '../../store/slices/auth/authSlice';
+import { fetchUsers } from '../../store/slices/user/userApi';
+import { selectUserStatus } from '../../store/slices/user/userSlice';
 
 type Loginvalues = { 
     userName: string
 }
-
-type userItem = { 
-    email: string,
-    username: string,
-    avatar: string,
-    name: string,
-    id: string
-}
-
 
 
 const { Title } = Typography;
@@ -29,28 +22,25 @@ const {getUsers} = ListService()
 
 const Login = () => { 
 
-    const [error, setError] = useState('')
-    const [loadig, setLoading] = useState(false)
+    const status = useAppSelector(selectUserStatus)
+
     const navigate = useNavigate()
 
     const dispatch = useAppDispatch()
 
     const onFinish = async ({userName}: Loginvalues) => {
-        setLoading(true)
-
-        const userList:userItem[] = await getUsers()
-
-        const fiendUser = userList.find((user) => user.username === userName)
-        console.log('fiendUser is', fiendUser)
         
-        if(!fiendUser) { 
-            setError('User not fiend')
-        } else { 
-            setError('')
-            dispatch(logIn())
-            navigate(LocaRoutes.Contacts)
+        try { 
+            const isUserFound = await dispatch(fetchUsers(userName)).unwrap()
+
+            if(isUserFound) { 
+                dispatch(logIn());
+                navigate(LocaRoutes.Contacts)
+            }
+
+        } catch(e) { 
+            console.log(e)
         }
-        setLoading(false)
     };
 
 
@@ -76,7 +66,7 @@ const Login = () => {
                 name="userName"
                 rules={[{ required: true, message: 'Please input your username!' }]}
                 >
-                <Input placeholder="Enter user name" />
+                <Input placeholder="Enter username" />
             </Form.Item>
             <Form.Item
                 label="Password"
@@ -86,14 +76,10 @@ const Login = () => {
                 <Input.Password placeholder="Enter password" />
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button loading={loadig} type="primary" htmlType="submit">
+                <Button loading={status === 'loading'} type="primary" htmlType="submit">
                     Log in
                 </Button>
             </Form.Item>
-
-            {
-                error && <Alert message="no user" type="error" />
-            }
             
         </Form>
     )

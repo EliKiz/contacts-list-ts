@@ -3,6 +3,7 @@ import { RootState } from '../../../components/app/store';
 
 export type AuthState = {
   isLoggedIn: boolean;
+
 };
 const initialState: AuthState = {
     isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',

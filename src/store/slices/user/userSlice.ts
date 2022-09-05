@@ -8,6 +8,14 @@ export type UserState = {
   error: string | null | undefined;
 };
 
+export type userItem = { 
+    email: string,
+    username: string,
+    avatar: string,
+    name: string,
+    id: string
+}
+
 const initialState: UserState = {
   data: JSON.parse(localStorage.getItem('userData') || '{}'),
   status: 'idle',

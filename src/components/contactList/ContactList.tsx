@@ -1,34 +1,31 @@
 
 import { Avatar, Button, List } from 'antd';
-import { useState, useEffect, ChangeEventHandler } from 'react';
+import {  useEffect} from 'react';
 import { Typography, Input} from 'antd';
-import {ListService} from '../../service/ListService';
+// import {ListService} from '../../service/ListService';
 import './contactList.css'
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { fetchContacts, selectContactList } from '../../store/slices/contact/contactSlice';
 
 
-const {getContact} = ListService()
+
 const { Title } = Typography;
 const { Search } = Input;
 
-type ContactItem = { 
-    phone: string,
-    name: string,
-    id: string
-}
+
 
 const ContactList = () => { 
 
-    const [contactList, setContactList] = useState<ContactItem[]>([])
-
+    const contactList = useAppSelector(selectContactList)
+    const dispatch = useAppDispatch()
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.value)
     }
 
     useEffect(() => {
-        getContact()
-            .then((res) => setContactList(res) )
-    }, [])
+        dispatch(fetchContacts())
+    }, [dispatch])
 
 
     return ( 
