@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {_apiUsers} from "../../../service/ListService"
+import {USERS_URL} from "../../../service/ListService"
 
 export type UserItem = {
   name: string;
@@ -14,7 +14,7 @@ export const fetchUsers = createAsyncThunk<
   string,
   { rejectValue: string }
 >('user/fetchUsers', async (userNameFromInput, { rejectWithValue }) => {
-  const response = await fetch(_apiUsers);
+  const response = await fetch(USERS_URL);
 
   if (!response.ok) {
     return rejectWithValue(
