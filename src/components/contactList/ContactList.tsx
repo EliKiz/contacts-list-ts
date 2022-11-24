@@ -15,6 +15,8 @@ import {
     selectContactStatus,
 } from "../../store/slices/contact/contactSlice";
 import AddForm from "./addForm/AddForm";
+import { EditForm } from "./editForm/EditForm";
+import { ContactItem } from "../../store/slices/contact/contactApi";
 
 const { confirm } = Modal;
 
@@ -23,6 +25,10 @@ const { Search } = Input;
 
 const ContactList = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [selectedContact, setSelectedContact] = useState<ContactItem | null>(
+        null
+    );
 
     const contactList = useAppSelector(selectContactList);
     const dispatch = useAppDispatch();
@@ -31,6 +37,12 @@ const ContactList = () => {
 
     const showAddForm = () => setIsOpen(true);
     const hideAddForm = () => setIsOpen(false);
+
+    const showEditForm = (contactItem: ContactItem) => {
+        setIsEditOpen(true);
+        setSelectedContact(contactItem);
+    };
+    const hideEditForm = () => setIsEditOpen(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.value);
@@ -71,7 +83,11 @@ const ContactList = () => {
                 renderItem={(item) => (
                     <List.Item
                         actions={[
-                            <Button key="list-loadmore-edit">edit</Button>,
+                            <Button
+                                onClick={() => showEditForm(item)}
+                                key="list-loadmore-edit">
+                                edit
+                            </Button>,
                             <Button
                                 onClick={() => handleDelet(item.id)}
                                 key="list-loadmore-more">
@@ -96,6 +112,13 @@ const ContactList = () => {
             </Button>
             {isOpen && (
                 <AddForm isAddFormVisible={isOpen} hideAddForm={hideAddForm} />
+            )}
+            {isEditOpen && (
+                <EditForm
+                    isEditFormVisible={isEditOpen}
+                    hideEditForm={hideEditForm}
+                    selectedContact={selectedContact}
+                />
             )}
         </div>
     );
