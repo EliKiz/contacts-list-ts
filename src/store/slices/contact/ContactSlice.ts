@@ -48,6 +48,28 @@ export const deleteContact = createAsyncThunk<
   return id;
 });
 
+export const addContact = createAsyncThunk<
+  ContactItem,
+  { name: string; phone: string },
+  { rejectValue: string }
+>('contact/addContact', async (newContact, { rejectWithValue }) => {
+  const response = await fetch(CONTACTS_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newContact),
+  });
+
+  if (!response.ok) {
+    return rejectWithValue(
+      `Ошибка при добавлении: ${response.status} (${response.statusText})`
+    );
+  }
+
+  return await response.json();
+});
+
 export const contactSlice = createSlice({
   name: 'contact',
   initialState,
@@ -81,6 +103,19 @@ export const contactSlice = createSlice({
         }
       })
       .addCase(deleteContact.rejected, (state) => {
+        state.status = 'failed';
+      })
+      // cases for add a single contact
+      .addCase(addContact.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addContact.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload) {
+          state.list = [...state.list, action.payload ]
+        }
+      })
+      .addCase(addContact.rejected, (state) => {
         state.status = 'failed';
       })
 

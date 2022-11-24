@@ -1,5 +1,5 @@
 import { Avatar, Button, List, Modal } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Typography, Input } from "antd";
 import {
     DeleteOutlined,
@@ -14,6 +14,7 @@ import {
     selectContactList,
     selectContactStatus,
 } from "../../store/slices/contact/contactSlice";
+import AddForm from "./addForm/AddForm";
 
 const { confirm } = Modal;
 
@@ -21,10 +22,15 @@ const { Title } = Typography;
 const { Search } = Input;
 
 const ContactList = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
     const contactList = useAppSelector(selectContactList);
     const dispatch = useAppDispatch();
 
     const status = useAppSelector(selectContactStatus);
+
+    const showAddForm = () => setIsOpen(true);
+    const hideAddForm = () => setIsOpen(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.value);
@@ -36,15 +42,15 @@ const ContactList = () => {
 
     const handleDelet = (id: string) => {
         confirm({
-            title: "Вы уверены?",
+            title: "Are you soure?",
             icon: <ExclamationCircleOutlined />,
             content: "Удаление не отменить",
             onOk() {
                 dispatch(deleteContact(id)).unwrap();
             },
             onCancel() {},
-            cancelText: "Отмена",
-            okText: "Да",
+            cancelText: "Cancel",
+            okText: "Yes",
         });
     };
 
@@ -73,16 +79,24 @@ const ContactList = () => {
                             </Button>,
                         ]}>
                         <List.Item.Meta
-                            avatar={<Avatar src={item.name} />}
+                            avatar={
+                                <Avatar src="https://joeschmoe.io/api/v1/random" />
+                            }
                             title={item.name}
                             description={item.phone}
                         />
                     </List.Item>
                 )}
             />
-            <Button type="primary" className="contactList-btn-add">
-                Adding new contact
+            <Button
+                onClick={showAddForm}
+                type="primary"
+                className="contactList-btn-add">
+                Add new contact
             </Button>
+            {isOpen && (
+                <AddForm isAddFormVisible={isOpen} hideAddForm={hideAddForm} />
+            )}
         </div>
     );
 };
