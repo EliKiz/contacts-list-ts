@@ -1,6 +1,6 @@
 # Contact list with authorization
 
-# ![image](src/assets/photo_mainScrin.jpg)
+# ![image](src/img/photo_mainScrin.jpg)
 
 ## General info
 
@@ -15,11 +15,11 @@ Implement a small SPA application using React.js, which consists of 2 pages: "Lo
 
 ### Error :
 
-# ![image](src/assets/photo_eror.jpg)
+# ![image](src/img/photo_eror.jpg)
 
 ### Contact Page :
 
-# ![image](src/assets/photo_contactList.jpg)
+# ![image](src/img/photo_contactList.jpg)
 
 ## Technologies
 
