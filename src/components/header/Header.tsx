@@ -5,7 +5,6 @@ import { logOut } from "../../store/slices/auth/authSlice";
 import { selectUserData } from "../../store/slices/user/userSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { LocaRoutes } from "../pages/LocalRoutes";
-import s from "./Header.module.css";
 
 const Header = () => {
     const dispatch = useAppDispatch();
@@ -19,7 +18,7 @@ const Header = () => {
     };
 
     return (
-        <header className={s.header}>
+        <header>
             <div>
                 <span> User, {userData?.username}</span>
             </div>
