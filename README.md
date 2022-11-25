@@ -29,7 +29,8 @@ Project is created with:
 -   TypeScript
 -   Redux
 -   Redux-Toolkit
--   React-Router
+-   React-RouterAnt Design
+-   Ant Design
 
 ## Setup
 
