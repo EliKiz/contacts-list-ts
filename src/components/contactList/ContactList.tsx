@@ -1,32 +1,37 @@
-import { Avatar, Button, List, Modal } from "antd";
+import { Alert, Avatar, Button, List, Modal } from "antd";
 import { useEffect, useState } from "react";
-import { Typography, Input } from "antd";
-import {
-    DeleteOutlined,
-    EditOutlined,
-    ExclamationCircleOutlined,
-} from "@ant-design/icons";
-import "./contactList.css";
+import { Typography } from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
+import AddForm from "./addForm/AddForm";
+import { EditForm } from "./editForm/EditForm";
 import {
+    ContactItem,
     deleteContact,
     fetchContacts,
+} from "../../store/slices/contact/contactApi";
+import {
     selectContactList,
     selectContactStatus,
 } from "../../store/slices/contact/contactSlice";
-import AddForm from "./addForm/AddForm";
-import { EditForm } from "./editForm/EditForm";
-import { ContactItem } from "../../store/slices/contact/contactApi";
+import SearchForm from "./searchForm/SearchForm";
+
+import "./contactList.css";
 
 const { confirm } = Modal;
 
 const { Title } = Typography;
-const { Search } = Input;
 
 const ContactList = () => {
+    const [error, setError] = useState("");
+
     const [isOpen, setIsOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [selectedContact, setSelectedContact] = useState<ContactItem | null>(
+        null
+    );
+
+    const [filteredList, setFilteredList] = useState<ContactItem[] | null>(
         null
     );
 
@@ -44,19 +49,18 @@ const ContactList = () => {
     };
     const hideEditForm = () => setIsEditOpen(false);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value);
-    };
-
     useEffect(() => {
-        dispatch(fetchContacts());
+        dispatch(fetchContacts())
+            .unwrap()
+            .then(() => setError(""))
+            .catch((err) => setError(err));
     }, [dispatch]);
 
     const handleDelet = (id: string) => {
         confirm({
             title: "Are you soure?",
             icon: <ExclamationCircleOutlined />,
-            content: "Удаление не отменить",
+            content: "Can't cancel deletion",
             onOk() {
                 dispatch(deleteContact(id)).unwrap();
             },
@@ -69,16 +73,18 @@ const ContactList = () => {
     return (
         <div className="contactList">
             <Title>List contacts</Title>
-            <Search
-                className="contactSerch"
-                placeholder="search contact"
-                onChange={handleChange}
-                enterButton
-            />
+            <SearchForm setFilteredList={setFilteredList} />
+            {error && (
+                <Alert
+                    style={{ marginBottom: "20px" }}
+                    message={error}
+                    type="error"
+                />
+            )}
             <List
                 bordered
                 itemLayout="horizontal"
-                dataSource={contactList}
+                dataSource={filteredList?.length ? filteredList : contactList}
                 loading={status === "loading"}
                 renderItem={(item) => (
                     <List.Item

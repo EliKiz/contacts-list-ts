@@ -1,11 +1,7 @@
 import { Button, Form, Input, Modal } from "antd";
-import Title from "antd/lib/skeleton/Title";
 import { useState } from "react";
-import { ContactItem } from "../../../store/slices/contact/contactApi";
-import {
-    addContact,
-    selectContactStatus,
-} from "../../../store/slices/contact/contactSlice";
+import { addContact } from "../../../store/slices/contact/contactApi";
+import { selectContactStatus } from "../../../store/slices/contact/contactSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 type Props = {
@@ -32,10 +28,9 @@ export const AddForm = ({ isAddFormVisible, hideAddForm }: Props) => {
 
     return (
         <Modal
-            title="Добавление контакта"
+            title="Add new contact "
             visible={isAddFormVisible}
             onCancel={hideAddForm}
-            width={400}
             centered
             footer={null}>
             <Form
@@ -52,10 +47,10 @@ export const AddForm = ({ isAddFormVisible, hideAddForm }: Props) => {
                     rules={[
                         {
                             required: true,
-                            message: "Пожалуйста введите имя!",
+                            message: "Please enter your name!",
                         },
                     ]}>
-                    <Input placeholder="Введите имя" />
+                    <Input placeholder="Enter name" />
                 </Form.Item>
                 <Form.Item
                     label="Username"
@@ -63,17 +58,17 @@ export const AddForm = ({ isAddFormVisible, hideAddForm }: Props) => {
                     rules={[
                         {
                             required: true,
-                            message: "Пожалуйста введите номер!",
+                            message: "Please enter your telephone number!",
                         },
                     ]}>
-                    <Input placeholder="Введите номер телефона" />
+                    <Input placeholder="Enter telephone number" />
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button
                         loading={status === "loading"}
                         type="primary"
                         htmlType="submit">
-                        Добавить
+                        Add
                     </Button>
                 </Form.Item>
             </Form>

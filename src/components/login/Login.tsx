@@ -1,15 +1,17 @@
-import { Button, Form, Input } from "antd";
-import { Typography, Alert } from "antd";
-import { useState } from "react";
+import { Alert, Button, Form, Input } from "antd";
+import { Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { LocaRoutes } from "../pages/LocalRoutes";
-import { ListService } from "../../service/ListService";
 
-import "./login.css";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { logIn } from "../../store/slices/auth/authSlice";
 import { fetchUsers } from "../../store/slices/user/userApi";
-import { selectUserStatus } from "../../store/slices/user/userSlice";
+import {
+    selectUserError,
+    selectUserStatus,
+} from "../../store/slices/user/userSlice";
+
+import "./login.css";
 
 type Loginvalues = {
     userName: string;
@@ -17,11 +19,9 @@ type Loginvalues = {
 
 const { Title } = Typography;
 
-const { getUsers } = ListService();
-
 const Login = () => {
     const status = useAppSelector(selectUserStatus);
-
+    const error = useAppSelector(selectUserError);
     const navigate = useNavigate();
 
     const dispatch = useAppDispatch();
@@ -29,7 +29,6 @@ const Login = () => {
     const onFinish = async ({ userName }: Loginvalues) => {
         try {
             const isUserFound = await dispatch(fetchUsers(userName)).unwrap();
-
             if (isUserFound) {
                 dispatch(logIn());
                 navigate(LocaRoutes.Contacts);
@@ -78,6 +77,7 @@ const Login = () => {
                     Log in
                 </Button>
             </Form.Item>
+            {error && <Alert message="User is not found" type="error" />}
         </Form>
     );
 };

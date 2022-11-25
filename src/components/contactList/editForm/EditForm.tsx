@@ -1,9 +1,5 @@
 import { useState } from "react";
-import {
-    ArrowDownOutlined,
-    PhoneOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
+import { PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Modal, Input, Button, Alert } from "antd";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
@@ -45,7 +41,7 @@ export const EditForm = ({
 
     return (
         <Modal
-            title="Редактирование контакта"
+            title="Edit contact"
             visible={isEditFormVisible}
             onCancel={hideEditForm}
             width={450}
@@ -62,14 +58,14 @@ export const EditForm = ({
                     rules={[
                         {
                             required: true,
-                            message: "Пожалуйста введите имя контакта",
+                            message: "Please enter your name",
                         },
                     ]}>
                     <Input
                         prefix={
                             <UserOutlined className="site-form-item-icon" />
                         }
-                        placeholder="Название контакта"
+                        placeholder="Name contact"
                     />
                 </Form.Item>
 
@@ -78,14 +74,14 @@ export const EditForm = ({
                     rules={[
                         {
                             required: true,
-                            message: "Пожалуйста введите номер телефона",
+                            message: "Please enter your telephone number",
                         },
                     ]}>
                     <Input
                         prefix={
                             <PhoneOutlined className="site-form-item-icon" />
                         }
-                        placeholder="Номер телефона"
+                        placeholder="telephone number"
                     />
                 </Form.Item>
 
@@ -95,7 +91,7 @@ export const EditForm = ({
                         type="primary"
                         htmlType="submit"
                         style={{ width: "100%" }}>
-                        Сохранить
+                        Save
                     </Button>
                 </Form.Item>
             </Form>

@@ -33,6 +33,7 @@ export const userSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         if (action.payload) {
+          state.status = 'idle';
           state.data = action.payload;
           localStorage.setItem('userData', JSON.stringify(action.payload));
           state.error = '';

@@ -1,8 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../../components/app/store';
-import {ListService, CONTACTS_URL} from '../../../service/ListService'
-
-const {getContact} = ListService()
+import { addContact, deleteContact, editContact, fetchContacts } from './contactApi';
 
 type ContactItem = { 
   phone: string,
@@ -22,60 +20,11 @@ const initialState: ContactState = {
   isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
 };
 
-export const fetchContacts = createAsyncThunk(
-  "contact/fetchContacts",
-  async () => { 
-    const response = await fetch(CONTACTS_URL)
-    return await response.json()
-  }
-)
-
-export const deleteContact = createAsyncThunk<
-  string,
-  string,
-  { rejectValue: string }
->('contact/deleteContact', async (id, { rejectWithValue }) => {
-  const response = await fetch(`${CONTACTS_URL}/${id}`, {
-    method: 'DELETE',
-  });
-
-  if (!response.ok) {
-    return rejectWithValue(
-      `Ошибка при удалении: ${response.status} (${response.statusText})`
-    );
-  }
-
-  return id;
-});
-
-export const addContact = createAsyncThunk<
-  ContactItem,
-  { name: string; phone: string },
-  { rejectValue: string }
->('contact/addContact', async (newContact, { rejectWithValue }) => {
-  const response = await fetch(CONTACTS_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(newContact),
-  });
-
-  if (!response.ok) {
-    return rejectWithValue(
-      `Ошибка при добавлении: ${response.status} (${response.statusText})`
-    );
-  }
-
-  return await response.json();
-});
 
 export const contactSlice = createSlice({
   name: 'contact',
   initialState,
-  reducers: {
-  
-  },
+  reducers: {},
   extraReducers:(builder) => { 
     builder
       .addCase(fetchContacts.pending, (state) => {
@@ -118,6 +67,25 @@ export const contactSlice = createSlice({
       .addCase(addContact.rejected, (state) => {
         state.status = 'failed';
       })
+       // cases for editing a single contact
+       .addCase(editContact.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(editContact.fulfilled, (state, action) => {
+        state.status = 'idle';
+        if (action.payload) {
+          state.list = state.list.map((contact) => {
+            if (contact.id === action.payload.id) {
+              return action.payload;
+            }
+
+            return contact;
+          });
+        }
+      })
+      .addCase(editContact.rejected, (state) => {
+        state.status = 'failed';
+      });
 
   }
 });
